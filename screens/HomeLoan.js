@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { AntDesign ,Ionicons,Foundation} from '@expo/vector-icons';
+import CodeVerificationModal from './Modal'; // Adjust the path as needed
+import SendSMS from 'react-native-sms';
 
 const HomeLoan = () => {
   const navigation = useNavigation();
@@ -10,9 +12,9 @@ const HomeLoan = () => {
   const [email, setEmail] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [loanAmount, setLoanAmount] = useState('');
-
+  const [codeVerificationModalVisible, setCodeVerificationModalVisible] = useState(false);
   const [focusedInput, setFocusedInput] = useState(null);
-
+  const [sixDigitCode, setSixDigitCode] = useState('');
   const handleFocus = (input) => {
     setFocusedInput(input);
   };
@@ -22,8 +24,61 @@ const HomeLoan = () => {
   };
 
   const handleSubmission = () => {
-    // Handle the submission logic here
-    // You can use the values of name, email, phoneNumber, and loanAmount
+    // Validation checks
+    if (!name.trim()) {
+      alert('Please enter your name');
+      return;
+    }
+  
+    if (!email.trim()) {
+      alert('Please enter your email');
+      return;
+    }
+  
+    if (!phoneNumber.trim()) {
+      alert('Please enter your phone number');
+      return;
+    }
+  
+    if (!loanAmount.trim()) {
+      alert('Please enter the loan amount');
+      return;
+    }
+  
+    // Simulate sending a 6-digit code to the phone number
+    const sixDigitCode = Math.floor(100000 + Math.random() * 900000).toString();
+    setSixDigitCode(sixDigitCode);
+    sendSMS(`+${phoneNumber}`, `Your verification code is: ${sixDigitCode}`);
+    setCodeVerificationModalVisible(true);
+   
+  };
+  const sendSMS = (phoneNumber, message) => {
+    console.log(message)
+    SendSMS.send({
+      body: message,
+      recipients: [phoneNumber],
+      successTypes: ['sent', 'queued'],
+      allowAndroidSendWithoutReadPermission: true,
+      method: 'sendDirect',
+    });
+    alert('code send');
+  };
+
+
+  const handleCloseModal = () => {
+    setCodeVerificationModalVisible(false);
+  };
+
+  const handleVerifyCode = (enteredCode) => {
+    if (enteredCode === sixDigitCode) {
+      // Code is correct, you can navigate to the next screen or perform other actions
+      // For now, we'll just close the modal
+      setCodeVerificationModalVisible(false);
+      alert('Code verified successfully!');
+    } else {
+      // Incorrect code, you can display an error message
+      alert('Incorrect code. Please try again.');
+    }
   };
 
   return (
@@ -63,7 +118,7 @@ const HomeLoan = () => {
         </View>
 
         <View style={[styles.inputWrapper, focusedInput === 'phoneNumber' && styles.focusedInput]}>
-          <AntDesign name="phone" size={20} color={focusedInput === 'phoneNumber' ? '#216FF4' : '#98A0A0'} style={styles.icon} />
+          <Text style={styles.icon} >🇮🇳</Text>
           <TextInput
             style={styles.input}
             placeholder="Phone Number"
@@ -91,6 +146,12 @@ const HomeLoan = () => {
         <TouchableOpacity style={styles.submitButton} onPress={handleSubmission}>
           <Text style={styles.submitButtonText}>Submit</Text>
         </TouchableOpacity>
+        <CodeVerificationModal
+        visible={codeVerificationModalVisible}
+        code={sixDigitCode}
+        onClose={handleCloseModal}
+        onSubmit={handleVerifyCode}
+      />
       </View>
     </ScrollView>
   );
@@ -136,6 +197,7 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginRight: 10,
+    fontSize:23
   },
   input: {
     flex: 1,
