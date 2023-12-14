@@ -1,19 +1,38 @@
-// components/CardComponent.js
-
 import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 const Card = ({ title, description, image }) => {
+  const navigation = useNavigation();
+
+  const handlePress = () => {
+    switch (title) {
+      case 'Personal Loan':
+        navigation.navigate('PersonalLoan');
+        break;
+      case 'Home Loan':
+        navigation.navigate('HomeLoan');
+        break;
+      case 'Business Loan':
+        navigation.navigate('BusinessLoan');
+        break;
+      default:
+        break;
+    }
+  };
+
   return (
-    <View style={styles.card}>
-      <View style={styles.cardContent}>
-        <View style={styles.textContainer}>
-          <Text style={styles.cardTitle}>{title}</Text>
-          <Text style={styles.cardDescription}>{description}</Text>
+    <TouchableOpacity onPress={handlePress}>
+      <View style={styles.card}>
+        <View style={styles.cardContent}>
+          <View style={styles.textContainer}>
+            <Text style={styles.cardTitle}>{title}</Text>
+            <Text style={styles.cardDescription}>{description}</Text>
+          </View>
+          <Image source={image} style={styles.cardImage} />
         </View>
-        <Image source={image} style={styles.cardImage} />
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

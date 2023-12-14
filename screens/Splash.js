@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native';
 import AppIntroSlider from 'react-native-app-intro-slider';
 import { useNavigation } from '@react-navigation/native';
-import { useState ,useRef} from 'react';
+import { useRef} from 'react';
 
 const slides = [
   {
@@ -10,7 +10,6 @@ const slides = [
     title: 'Welcome To Dhani Faster Loan',
     text: "We're here to assist you in your financial journey. To get started, we need some information from you. Let's make this quick and easy. Tap 'Next' to Begin.",
     image: require("../images/s1.png"),
-    buttonText:"Next"
   },
   {
     key: 2,
