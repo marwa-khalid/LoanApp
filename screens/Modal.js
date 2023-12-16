@@ -1,5 +1,6 @@
 import React from 'react';
-import { Modal, View, TextInput, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { Modal, View, TextInput, Text, TouchableOpacity, StyleSheet,Alert } from 'react-native';
+import OneMinuteTimer from './Timer';
 
 const CodeVerificationModal = ({ visible, phoneNumber, onClose, onResend, onSubmit }) => {
   const [enteredCode, setEnteredCode] = React.useState('');
@@ -10,7 +11,7 @@ const CodeVerificationModal = ({ visible, phoneNumber, onClose, onResend, onSubm
         <View style={styles.modalContent}>
           <Text style={styles.title}>Verification</Text>
           <Text style={styles.phoneNumberText}>
-            A verification code has been sent to your phone number {phoneNumber}
+          A verification code will be sent to your number 
           </Text>
           <Text style={styles.phoneNumber}>{phoneNumber}</Text>
           <View style={styles.codeContainer}>
@@ -25,9 +26,15 @@ const CodeVerificationModal = ({ visible, phoneNumber, onClose, onResend, onSubm
               />
             ))}
           </View>
-          <Text style={styles.resendText} onPress={onResend}>
-            Didn't get the code? Resend it.
+          <Text style={styles.resendText}>
+          <OneMinuteTimer />
           </Text>
+          <Text>
+          <Text style={{ color: '#8E8E8E'}}>Didn't Receive Code? </Text>
+          <Text style={{ color: '#216FF4', fontWeight: 'bold', fontSize:16 }} onPress={onResend}>
+            Resend Code
+          </Text>
+        </Text>
           <TouchableOpacity style={styles.submitButton} onPress={() => onSubmit(enteredCode)}>
             <Text style={styles.submitButtonText}>Confirm</Text>
           </TouchableOpacity>
@@ -65,13 +72,14 @@ const styles = StyleSheet.create({
   phoneNumberText: {
     fontSize: 16,
     marginBottom: 5,
-    color:"black"
+    color:"black",
+    
   },
   phoneNumber: {
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 15,
-    color:"black"
+    color:"#216FF4",
   },
   codeContainer: {
     flexDirection: 'row',
@@ -90,10 +98,7 @@ const styles = StyleSheet.create({
     fontWeight:"bold"
   },
   resendText: {
-    fontSize: 14,
-    marginBottom: 15,
-    textDecorationLine: 'none',
-    color: '#8E8E8E',
+    marginBottom:8
   },
   submitButton: {
     backgroundColor: '#216FF4',

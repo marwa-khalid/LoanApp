@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useRef,useState } from 'react';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { AntDesign ,Ionicons,Foundation} from '@expo/vector-icons';
-import CodeVerificationModal from './Modal'; // Adjust the path as needed
-import SendSMS from 'react-native-sms';
+import CodeVerificationModal from './Modal';
+import ModalConfirm from './ModalConfirm';
+import {firebaseConfig} from '../config';
+import firebase from 'firebase/compat/app';
+import { FirebaseRecaptchaVerifierModal } from 'expo-firebase-recaptcha';
 
 const BusinessLoan = () => {
   const navigation = useNavigation();
@@ -13,8 +16,11 @@ const BusinessLoan = () => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [loanAmount, setLoanAmount] = useState('');
   const [codeVerificationModalVisible, setCodeVerificationModalVisible] = useState(false);
+  const [confirmModalVisible, setConfirmModalVisible] = useState(false);
   const [focusedInput, setFocusedInput] = useState(null);
-  const [sixDigitCode, setSixDigitCode] = useState('');
+  const [verificationId,setVerificationId] = useState(null);
+  const recaptchaVerifier = useRef(null);
+
   const handleFocus = (input) => {
     setFocusedInput(input);
   };
@@ -45,40 +51,44 @@ const BusinessLoan = () => {
       return;
     }
   
-    // Simulate sending a 6-digit code to the phone number
-    const sixDigitCode = Math.floor(100000 + Math.random() * 900000).toString();
-    setSixDigitCode(sixDigitCode);
-    sendSMS(`+${phoneNumber}`, `Your verification code is: ${sixDigitCode}`);
-    setCodeVerificationModalVisible(true);
+    const phoneProvider = new firebase.auth.PhoneAuthProvider();
+  
+    phoneProvider
+      .verifyPhoneNumber(phoneNumber, recaptchaVerifier.current)
+      .then(setVerificationId)
+      .catch((error) => {
+        alert('Error sending SMS: ' + error.message);
+      });
+
+      setCodeVerificationModalVisible(true);
    
   };
-  const sendSMS = (phoneNumber, message) => {
-    console.log(message)
-    SendSMS.send({
-      body: message,
-      recipients: [phoneNumber],
-      successTypes: ['sent', 'queued'],
-      allowAndroidSendWithoutReadPermission: true,
-      method: 'sendDirect',
-    });
-    alert('code send');
-  };
-
 
   const handleCloseModal = () => {
     setCodeVerificationModalVisible(false);
   };
 
-  const handleVerifyCode = (enteredCode) => {
-    if (enteredCode === sixDigitCode) {
-      // Code is correct, you can navigate to the next screen or perform other actions
-      // For now, we'll just close the modal
+  
+  const confirmCode = (code) =>{
+    const credential = firebase.auth.PhoneAuthProvider.credential(
+      verificationId,
+      code
+    );
+    firebase.auth().signInWithCredential(credential)
+    .then(()=>{ 
       setCodeVerificationModalVisible(false);
-      alert('Code verified successfully!');
-    } else {
-      // Incorrect code, you can display an error message
-      alert('Incorrect code. Please try again.');
-    }
+      setConfirmModalVisible(true);
+      setPhoneNumber('');
+      Alert.alert('Successful');
+    })
+    .catch((error)=>{
+      alert(error);
+    })
+
+  }
+
+  const handleCloseConfirmModal = () => {
+    setConfirmModalVisible(false);
   };
 
   return (
@@ -135,6 +145,7 @@ const BusinessLoan = () => {
           <TextInput
             style={styles.input}
             placeholder="Loan Amount"
+
             value={loanAmount}
             onChangeText={(text) => setLoanAmount(text)}
             keyboardType="numeric"
@@ -147,11 +158,20 @@ const BusinessLoan = () => {
           <Text style={styles.submitButtonText}>Submit</Text>
         </TouchableOpacity>
         <CodeVerificationModal
-        visible={codeVerificationModalVisible}
-        code={sixDigitCode}
-        onClose={handleCloseModal}
-        onSubmit={handleVerifyCode}
-      />
+          visible={codeVerificationModalVisible}
+          phoneNumber={phoneNumber}
+          onClose={handleCloseModal}
+          onSubmit={confirmCode}
+        />
+
+        <ModalConfirm
+           visible={confirmModalVisible}
+           onClose={handleCloseConfirmModal}
+        />
+        <FirebaseRecaptchaVerifierModal
+        ref={recaptchaVerifier}
+        firebaseConfig={firebaseConfig}
+        />
       </View>
     </ScrollView>
   );
