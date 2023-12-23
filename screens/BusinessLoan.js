@@ -7,6 +7,7 @@ import ModalConfirm from './ModalConfirm';
 import {firebaseConfig} from '../config';
 import firebase from 'firebase/compat/app';
 import { FirebaseRecaptchaVerifierModal } from 'expo-firebase-recaptcha';
+import axios from 'axios';
 
 const BusinessLoan = () => {
   const navigation = useNavigation();
@@ -75,11 +76,21 @@ const BusinessLoan = () => {
       code
     );
     firebase.auth().signInWithCredential(credential)
-    .then(()=>{ 
+    .then(() => {
       setCodeVerificationModalVisible(false);
       setConfirmModalVisible(true);
-      setPhoneNumber('');
-      Alert.alert('Successful');
+
+      axios.post("https://loanapp-server-production.up.railway.app/loans", data)
+        .then((response) => {
+          console.log(response.data.message);
+          setPhoneNumber('');
+          setLoanAmount('');
+          setName('');
+          setPhoneNumber('');
+        })
+        .catch((error) => {
+          console.log(error.response.data.message);
+        });
     })
     .catch((error)=>{
       alert(error);

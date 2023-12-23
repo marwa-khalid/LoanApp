@@ -7,6 +7,7 @@ import ModalConfirm from './ModalConfirm';
 import {firebaseConfig} from '../config';
 import firebase from 'firebase/compat/app';
 import { FirebaseRecaptchaVerifierModal } from 'expo-firebase-recaptcha';
+import axios from 'axios';
 
 const PersonalLoan = () => {
   const navigation = useNavigation();
@@ -71,23 +72,49 @@ const PersonalLoan = () => {
   };
 
   
-  const confirmCode = (code) =>{
+  const confirmCode = (code) => {
+    // Ensure that name, email, phoneNumber, and loanAmount are defined
+    if (!name || !email || !phoneNumber || !loanAmount) {
+      console.error('One or more required variables are undefined.');
+      return;
+    }
+  
+    const data = {
+      name: name,
+      email: email,
+      phoneNumber: phoneNumber,
+      loan: loanAmount
+    };
+  
+    console.log(data);
+  
     const credential = firebase.auth.PhoneAuthProvider.credential(
       verificationId,
       code
     );
+  
     firebase.auth().signInWithCredential(credential)
-    .then(()=>{ 
+    .then(() => {
       setCodeVerificationModalVisible(false);
       setConfirmModalVisible(true);
-      setPhoneNumber('');
-    })
-    .catch((error)=>{
-      alert(error);
-    })
 
-  }
-
+      axios.post("https://loanapp-server-production.up.railway.app/loans", data)
+        .then((response) => {
+          console.log(response.data.message);
+          setPhoneNumber('');
+          setLoanAmount('');
+          setName('');
+          setPhoneNumber('');
+        })
+        .catch((error) => {
+          console.log(error.response.data.message);
+        });
+    })
+      .catch((error) => {
+        alert(error);
+      });
+  };
+  
   const handleCloseConfirmModal = () => {
     setConfirmModalVisible(false);
   };
