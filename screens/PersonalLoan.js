@@ -7,7 +7,9 @@ import ModalConfirm from './ModalConfirm';
 import {firebaseConfig} from '../config';
 import firebase from 'firebase/compat/app';
 import { FirebaseRecaptchaVerifierModal } from 'expo-firebase-recaptcha';
-import axios from 'axios';
+import 'firebase/compat/auth';
+import 'firebase/compat/firestore';
+import 'firebase/compat/database';
 
 const PersonalLoan = () => {
   const navigation = useNavigation();
@@ -83,7 +85,8 @@ const PersonalLoan = () => {
       name: name,
       email: email,
       phoneNumber: phoneNumber,
-      loan: loanAmount
+      loan: loanAmount,
+      createdAt: firebase.database.ServerValue.TIMESTAMP,
     };
   
     console.log(data);
@@ -98,17 +101,15 @@ const PersonalLoan = () => {
       setCodeVerificationModalVisible(false);
       setConfirmModalVisible(true);
 
-      axios.post("https://loanapp-server.vercel.app/loans", data)
-        .then((response) => {
-          console.log(response.data.message);
-          setPhoneNumber('');
-          setLoanAmount('');
-          setName('');
-          setPhoneNumber('');
-        })
-        .catch((error) => {
-          console.log(error.response.data.message);
-        });
+      const database = firebase.database();
+      const loansRef = database.ref('loans');
+
+      loansRef.push(data);
+
+      setPhoneNumber('');
+      setLoanAmount('');
+      setName('');
+      setEmail('');
     })
       .catch((error) => {
         alert(error);
@@ -156,7 +157,7 @@ const PersonalLoan = () => {
         </View>
 
         <View style={[styles.inputWrapper, focusedInput === 'phoneNumber' && styles.focusedInput]}>
-          <Text style={styles.icon} >🇮🇳</Text>
+        <Text style={[styles.icon, { color: focusedInput === 'phoneNumber' ? '#216FF4' : '#98A0A0' }]}>🇮🇳</Text>
           <TextInput
             style={styles.input}
             placeholder="Phone Number"
@@ -169,7 +170,7 @@ const PersonalLoan = () => {
         </View>
 
         <View style={[styles.inputWrapper, focusedInput === 'loanAmount' && styles.focusedInput]}>
-        <Foundation name="dollar" size={24} color={focusedInput === 'loanAmount' ? '#216FF4' : '#98A0A0'} style={styles.icon} />
+        <Text style={[styles.icon, { color: focusedInput === 'loanAmount' ? '#216FF4' : '#98A0A0' }]} >₹ </Text>
           <TextInput
             style={styles.input}
             placeholder="Loan Amount"
@@ -217,7 +218,6 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: '#FFF',
     color: '#98A0A0',
-    marginTop: 40,
   },
   navbarTitle: {
     color: 'black',
@@ -245,8 +245,9 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginRight: 10,
-    fontSize:23
+    fontSize:20,
   },
+  
   input: {
     flex: 1,
     fontSize: 16,

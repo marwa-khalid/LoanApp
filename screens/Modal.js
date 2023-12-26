@@ -1,15 +1,24 @@
-import React from 'react';
+import React,{useEffect, useState} from 'react';
 import { Modal, View, TextInput, Text, TouchableOpacity, StyleSheet,Alert } from 'react-native';
 import OneMinuteTimer from './Timer';
+import { AntDesign } from '@expo/vector-icons';
 
 const CodeVerificationModal = ({ visible, phoneNumber, onClose, onResend, onSubmit }) => {
-  const [enteredCode, setEnteredCode] = React.useState('');
+  const [enteredCode, setEnteredCode] = useState('');
+
+  useEffect(()=>{
+    setEnteredCode(' ');
+  },[])
 
   return (
     <Modal visible={visible} animationType="slide" transparent>
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
-          <Text style={styles.title}>Verification</Text>
+        <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+            <AntDesign name="close" size={24} color="black" />
+            </TouchableOpacity>
+          <Text style={styles.title}>Verification </Text>
+            
           <Text style={styles.phoneNumberText}>
           A verification code will be sent to your number 
           </Text>
@@ -63,6 +72,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     width:350,
     alignItems: 'center',
+    justifyConten:"space-between"
   },
   title: {
     fontSize: 20,
@@ -114,6 +124,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
   },
+  closeButton:{
+    marginLeft:250
+  }
 });
 
 export default CodeVerificationModal;

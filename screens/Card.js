@@ -1,9 +1,10 @@
-import React from 'react';
+import React , { useState } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 const Card = ({ title, description, image }) => {
   const navigation = useNavigation();
+  const [isPressed, setIsPressed] = useState(false);
 
   const handlePress = () => {
     switch (title) {
@@ -22,8 +23,11 @@ const Card = ({ title, description, image }) => {
   };
 
   return (
-    <TouchableOpacity onPress={handlePress}>
-      <View style={styles.card}>
+    <TouchableOpacity 
+    onPress={handlePress}
+      onPressIn={() => setIsPressed(true)}
+      onPressOut={() => setIsPressed(false)}>
+      <View style={[styles.card, isPressed && styles.cardPressed]}>
         <View style={styles.cardContent}>
           <View style={styles.textContainer}>
             <Text style={styles.cardTitle}>{title}</Text>
@@ -44,16 +48,16 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     elevation: 5,
     shadowColor: '#000', 
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 5,
     height:110,
+  },
+  cardPressed: {
+    elevation: 1,
+    shadowColor: '#000', 
   },
   cardContent: {
     flexDirection: 'row', 
     backgroundColor: '#fff',
     borderRadius: 10,
-    overflow: 'hidden',
     height:110,
   },
   textContainer: {

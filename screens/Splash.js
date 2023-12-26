@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   image: {
-    marginTop:100,
+    marginTop:50,
     width: 340,
     height: 380,
     resizeMode: 'contain',
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
     height: 9,
     borderRadius: 5,
     marginHorizontal: 5,
-    marginBottom:610
+    marginBottom:720
   },
   inactiveDot: {
     backgroundColor: '#D9D9D9',
@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
     height: 9,
     borderRadius: 5,
     marginHorizontal: 5,
-    marginBottom:610
+    marginBottom:720
   },
 });
 

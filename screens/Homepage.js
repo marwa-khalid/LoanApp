@@ -2,9 +2,10 @@ import React from 'react';
 import { useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
-import Modal from './Sidebar';
+import Sidebar from './Sidebar';
 import CardComponent from './Card';
 import { useNavigation } from '@react-navigation/native';
+import Swiper from 'react-native-swiper';
 
 const Homepage = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -17,19 +18,24 @@ const Homepage = () => {
 
   return (
     <ScrollView style={styles.container}>
+      
         <View style={styles.navbar}>
+        
             <TouchableOpacity onPress={toggleSidebar}> 
                 <FontAwesome name="bars" size={24} style={styles.icon} />
             </TouchableOpacity>
-            
-            <Modal isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+            <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+           
             <Text style={styles.navbarTitle} >Dhani Faster Loan</Text> 
         </View>
 
-        <View style={styles.imageContainer}>
+        <Swiper style={styles.sliderContainer} showsButtons={false} autoplay={true} data-bs-theme="light" loop={true}>
+        {[1, 2, 3].map((index) => (
+          <View key={index} style={styles.slide}>
             <Image source={require('../images/s4.jpg')} style={styles.sliderImage} />
-        </View>
-
+          </View>
+        ))}
+      </Swiper>
         {/* Card Section */}
         <View style={styles.cardSection}>
         <CardComponent title="Personal Loan" description="Excel in sports with expert coaching." image={require('../images/s5.jpg')} />
@@ -52,8 +58,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         padding: 10,
         backgroundColor: '#FFF', 
-        color:"#98A0A0",
-        marginTop:40
+        color:"#98A0A0"
     },
     navbarTitle: {
       color: 'black',
@@ -66,12 +71,6 @@ const styles = StyleSheet.create({
         color:"#98A0A0"
     },
 
-    getNowButton: {
-      backgroundColor: '#3498db',
-      padding: 16,
-      borderRadius: 5,
-      margin: 20,
-    },
     buttonText: {
       color: '#fff',
       fontSize: 16,
@@ -82,12 +81,23 @@ const styles = StyleSheet.create({
       justifyContent: 'space-around',
       flexWrap: 'wrap',
     },
+    sliderContainer: {
+      height: 260,
+    },
+    slide: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
     sliderImage: {
-        width: '100%',
-        height: 250,
-        resizeMode: 'cover',
-        borderRadius:30
-      },
+      marginTop:10,
+      width: '100%',
+      height: 230,
+      padding:30,
+      resizeMode: 'contain',
+      borderRadius: 30,
+    },
+    
       imageContainer:{
         padding:10
       }

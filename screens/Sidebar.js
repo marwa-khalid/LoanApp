@@ -1,5 +1,5 @@
 import React from 'react';
-import { View,Image,TouchableOpacity,Text ,Modal,TouchableWithoutFeedback } from 'react-native';
+import { View,TouchableOpacity,Text ,Modal,TouchableWithoutFeedback } from 'react-native';
 import { StyleSheet } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 
@@ -13,6 +13,7 @@ const CustomSidebar = ({ isOpen, toggleSidebar }) => {
   <Modal
       animationType="slide"
       transparent={true}
+      hardwareAccelerated ={true}
       visible={isOpen}
       onRequestClose={() => {
         toggleSidebar();
@@ -52,10 +53,10 @@ const CustomSidebar = ({ isOpen, toggleSidebar }) => {
  
   )};
   
-const styles = StyleSheet.create({
+  const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.3)', 
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
   },
   sidebar: {
     position: 'absolute',
@@ -70,39 +71,39 @@ const styles = StyleSheet.create({
     transform: [{ translateX: 0 }],
   },
   sidebarClosed: {
-    transform: [{ translateX: 100 }], 
+    transform: [{ translateX: 100 }], // Adjust this value as needed
   },
-  titleContainer:{
-    flexDirection: 'row', 
+  titleContainer: {
+    flexDirection: 'row',
     alignItems: 'center',
-    marginTop:70, 
-    marginLeft:1,
-    marginBottom:40
+    marginTop: 40,
+    marginLeft: 1,
+    marginBottom: 40,
   },
-  title:{
-    color:"#216FF4", 
-    fontSize:26,
-    fontWeight:"bold",
-    marginLeft:10
+  title: {
+    color: '#216FF4',
+    fontSize: 26,
+    fontWeight: 'bold',
+    marginLeft: 10,
   },
-  options:{
-    marginLeft:50,
-    flexDirection: 'row', 
+  options: {
+    marginLeft: 50,
+    flexDirection: 'row',
     alignItems: 'center',
-    marginTop:25,
-    justifyContent:'space-between',
-    marginRight:30,
-    color:"#2A3333"
+    marginTop: 25,
+    justifyContent: 'space-between',
+    marginRight: 30,
+    color: '#2A3333',
   },
-  text:{
-    fontSize:18,
+  text: {
+    fontSize: 18,
   },
   line: {
     width: '75%', // Adjust the width as needed
     height: 2,
     backgroundColor: '#F3F3F3',
-    marginTop:15,
-    marginLeft:50,
+    marginTop: 15,
+    marginLeft: 50,
   },
 });
 
