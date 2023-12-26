@@ -7,7 +7,7 @@ import Homepage from './screens/Homepage';
 import PersonalLoan from './screens/PersonalLoan';
 import HomeLoan from './screens/HomeLoan';
 import BusinessLoan from './screens/BusinessLoan';
-import './App.css';
+
 const Stack = createNativeStackNavigator();
 
 const App = () =>{
