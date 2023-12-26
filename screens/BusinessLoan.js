@@ -80,7 +80,7 @@ const BusinessLoan = () => {
       setCodeVerificationModalVisible(false);
       setConfirmModalVisible(true);
 
-      axios.post("https://loanapp-server-production.up.railway.app/loans", data)
+      axios.post("https://loanapp-server.vercel.app/loans", data)
         .then((response) => {
           console.log(response.data.message);
           setPhoneNumber('');
