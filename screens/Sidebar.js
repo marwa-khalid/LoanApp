@@ -10,7 +10,7 @@ const CustomSidebar = ({ isOpen, toggleSidebar }) => {
   : [styles.sidebar, styles.sidebarClosed];
 
   return (
-  <Animated.View
+  <Modal
       animationType='slide'
       animationIn="slideInLeft"
       animationOut="slideOutRight"
@@ -53,7 +53,7 @@ const CustomSidebar = ({ isOpen, toggleSidebar }) => {
     </TouchableOpacity>
     <View style={styles.line} />
     </View>
-  </Animated.View>
+  </Modal>
  
   )};
   
@@ -75,7 +75,7 @@ const CustomSidebar = ({ isOpen, toggleSidebar }) => {
     transform: [{ translateX: 0 }],
   },
   sidebarClosed: {
-    transform: [{ translateX: 100 }], // Adjust this value as needed
+    transform: [{ translateX: 100 }], 
   },
   titleContainer: {
     flexDirection: 'row',
