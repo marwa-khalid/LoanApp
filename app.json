@@ -2,7 +2,15 @@
   "expo": {
     "name": "DhaniInstant",
     "slug": "DhaniInstant",
-    "version": "1.0.0"
+    "version": "1.0.0",
+    "extra": {
+      "eas": {
+        "projectId": "62a297eb-e99c-49b8-8b41-335c824550d8"
+      }
+    },
+    "android": {
+      "package": "com.marwakhalid_1.DhaniInstant"
+    }
   },
   "updates": {
     "useClassicUpdates": true,
