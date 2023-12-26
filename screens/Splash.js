@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     textAlign:"center",
-    marginBottom: 80,
+    marginBottom: 120,
     width: 340,
     height:370,
     borderRadius:30,
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
     height: 9,
     borderRadius: 5,
     marginHorizontal: 5,
-    marginBottom:720
+    marginBottom:760
   },
   inactiveDot: {
     backgroundColor: '#D9D9D9',
@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
     height: 9,
     borderRadius: 5,
     marginHorizontal: 5,
-    marginBottom:720
+    marginBottom:760
   },
 });
 

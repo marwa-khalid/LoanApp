@@ -1,5 +1,5 @@
 import React from 'react';
-import { View,TouchableOpacity,Text ,Modal,TouchableWithoutFeedback } from 'react-native';
+import { View,TouchableOpacity,Text ,Modal,TouchableWithoutFeedback, Animated } from 'react-native';
 import { StyleSheet } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 
@@ -10,9 +10,13 @@ const CustomSidebar = ({ isOpen, toggleSidebar }) => {
   : [styles.sidebar, styles.sidebarClosed];
 
   return (
-  <Modal
-      animationType="slide"
+  <Animated.View
+      animationType='slide'
+      animationIn="slideInLeft"
+      animationOut="slideOutRight"
       transparent={true}
+      animationInTiming={4}
+      animationOutTiming={4}
       hardwareAccelerated ={true}
       visible={isOpen}
       onRequestClose={() => {
@@ -49,7 +53,7 @@ const CustomSidebar = ({ isOpen, toggleSidebar }) => {
     </TouchableOpacity>
     <View style={styles.line} />
     </View>
-  </Modal>
+  </Animated.View>
  
   )};
   

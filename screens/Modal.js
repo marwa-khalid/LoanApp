@@ -5,10 +5,24 @@ import { AntDesign } from '@expo/vector-icons';
 
 const CodeVerificationModal = ({ visible, phoneNumber, onClose, onResend, onSubmit }) => {
   const [enteredCode, setEnteredCode] = useState('');
+  const codeInputs = Array.from({ length: 6 }, () => React.createRef());
 
   useEffect(()=>{
-    setEnteredCode(' ');
+    setEnteredCode('');
   },[])
+    const handleCodeChange = (index, value) => {
+    const newCodes = [...codes];
+    newCodes[index] = value;
+
+    // If backspace is pressed and the current input is empty,
+    // move the focus to the previous input.
+    if (value === '' && index > 0) {
+      codeInputs[index - 1].focus();
+    }
+
+    setCodes(newCodes);
+  };
+  
 
   return (
     <Modal visible={visible} animationType="slide" transparent>
@@ -29,6 +43,7 @@ const CodeVerificationModal = ({ visible, phoneNumber, onClose, onResend, onSubm
                 key={index}
                 style={styles.codeInput}
                 value={enteredCode[index - 1]}
+                ref={codeInputs[index - 1]}
                 onChangeText={(text) => handleCodeInput(text, index)}
                 keyboardType="numeric"
                 maxLength={1}
@@ -56,7 +71,12 @@ const CodeVerificationModal = ({ visible, phoneNumber, onClose, onResend, onSubm
     const updatedCode = [...enteredCode];
     updatedCode[index - 1] = text;
     setEnteredCode(updatedCode.join(''));
+  
+    if (text !== '' && index < 6) {
+      codeInputs[index].current.focus();
+    }
   }
+  
 };
 
 const styles = StyleSheet.create({
