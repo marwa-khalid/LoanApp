@@ -1,23 +1,28 @@
-import React from 'react';
-import { View,TouchableOpacity,Text ,Modal,TouchableWithoutFeedback, Animated } from 'react-native';
-import { StyleSheet } from 'react-native';
+import React , {useEffect,useState} from 'react';
+import { View, TouchableOpacity, Text, Modal, TouchableWithoutFeedback, StyleSheet, Dimensions} from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 
 const CustomSidebar = ({ isOpen, toggleSidebar }) => {
 
-  const sidebarStyles = isOpen
-  ? [styles.sidebar, styles.sidebarOpen]
-  : [styles.sidebar, styles.sidebarClosed];
+  const [screenHeight, setScreenHeight] = useState(Dimensions.get('window').height);
 
+  useEffect(() => {
+    // Update screenHeight when the screen size changes
+    const updateScreenHeight = () => {
+      setScreenHeight(Dimensions.get('window').height);
+    };
+
+    Dimensions.addEventListener('change', updateScreenHeight);
+
+    return () => {
+      // Remove the event listener when the component is unmounted
+      Dimensions.removeEventListener('change', updateScreenHeight);
+    };
+  }, []);
   return (
-  <Modal
+    <Modal
       animationType='slide'
-      animationIn="slideInLeft"
-      animationOut="slideOutRight"
       transparent={true}
-      animationInTiming={4}
-      animationOutTiming={4}
-      hardwareAccelerated ={true}
       visible={isOpen}
       onRequestClose={() => {
         toggleSidebar();
@@ -26,38 +31,30 @@ const CustomSidebar = ({ isOpen, toggleSidebar }) => {
       <TouchableWithoutFeedback onPress={toggleSidebar}>
         <View style={styles.overlay} />
       </TouchableWithoutFeedback>
-      
-  <View style={ sidebarStyles} >
 
-    <TouchableOpacity  style={styles.titleContainer} onPress={toggleSidebar}>
-        <AntDesign name="left" size={24} color="black" style={{ marginLeft: 20 }} />
-        <Text   style={styles.title}>Dhani Faster Loan</Text>
-      </TouchableOpacity>
-   
+      <View style={styles.sidebar}>
+        <TouchableOpacity style={[styles.titleContainer, screenHeight && screenHeight< 780 && styles.titleContainerSmall]} onPress={toggleSidebar}>
+          <AntDesign name="left" size={24} color="black" style={{ marginLeft: 20 }} />
+          <Text style={[styles.title,screenHeight && screenHeight< 780 && styles.titleSmall]}>Dhani Finance Loan</Text>
+        </TouchableOpacity>
 
-    <TouchableOpacity
-      style={styles.options}
-    >
-      <Text style={styles.text}>Term And Condition</Text>
-      <AntDesign name="right" size={24} color="black" />
-      
-    </TouchableOpacity>
-    <View style={styles.line} />
+        <TouchableOpacity style={styles.options}>
+          <Text style={styles.text}>Term And Condition</Text>
+          <AntDesign name="right" size={24} color="black" />
+        </TouchableOpacity>
+        <View style={styles.line} />
 
-    <TouchableOpacity
-      style={styles.options}
-    >
-       <Text style={styles.text}>Privacy Policy</Text>
-       <AntDesign name="right" size={24} color="black" />
-     
-    </TouchableOpacity>
-    <View style={styles.line} />
-    </View>
-  </Modal>
- 
-  )};
-  
-  const styles = StyleSheet.create({
+        <TouchableOpacity style={styles.options}>
+          <Text style={styles.text}>Privacy Policy</Text>
+          <AntDesign name="right" size={24} color="black" />
+        </TouchableOpacity>
+        <View style={styles.line} />
+      </View>
+    </Modal>
+  );
+};
+
+const styles = StyleSheet.create({
   overlay: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.3)',
@@ -69,19 +66,18 @@ const CustomSidebar = ({ isOpen, toggleSidebar }) => {
     height: '100%',
     width: '80%',
     backgroundColor: 'white',
-    zIndex: 1,
-  },
-  sidebarOpen: {
-    transform: [{ translateX: 0 }],
-  },
-  sidebarClosed: {
-    transform: [{ translateX: 100 }], 
   },
   titleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 40,
-    marginLeft: 1,
+    marginLeft: 20,
+    marginBottom: 40,
+  },
+  titleContainerSmall: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 40,
     marginBottom: 40,
   },
   title: {
@@ -89,14 +85,20 @@ const CustomSidebar = ({ isOpen, toggleSidebar }) => {
     fontSize: 26,
     fontWeight: 'bold',
     marginLeft: 10,
+    marginRight:20
+  },
+  titleSmall: {
+    color: '#216FF4',
+    fontSize: 22,
+    fontWeight: 'bold',
+    marginLeft: 10,
   },
   options: {
-    marginLeft: 50,
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 25,
     justifyContent: 'space-between',
-    marginRight: 30,
+    marginHorizontal: 20,
     color: '#2A3333',
   },
   text: {
@@ -107,10 +109,8 @@ const CustomSidebar = ({ isOpen, toggleSidebar }) => {
     height: 2,
     backgroundColor: '#F3F3F3',
     marginTop: 15,
-    marginLeft: 50,
+    marginLeft: 20,
   },
 });
-
-
 
 export default CustomSidebar;

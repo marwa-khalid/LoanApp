@@ -1,12 +1,28 @@
-import React from 'react';
-import { Modal, View, TextInput, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import React, {useState,useEffect} from 'react';
+import { Modal, View, TextInput, Text, TouchableOpacity, Image, StyleSheet,Dimensions } from 'react-native';
 
 const ModalConfirm = ({  visible,onClose }) => {
+
+  const [screenHeight, setScreenHeight] = useState(Dimensions.get('window').height);
+
+  useEffect(()=>{
+    const updateScreenHeight = () => {
+      setScreenHeight(Dimensions.get('window').height);
+    };
+
+    Dimensions.addEventListener('change', updateScreenHeight);
+
+    return () => {
+      // Remove the event listener when the component is unmounted
+      Dimensions.removeEventListener('change', updateScreenHeight);
+    };
+  },[])
+
 
   return (
     <Modal visible={visible} animationType="slide" transparent>
       <View style={styles.modalContainer}>
-        <View style={styles.modalContent}>
+        <View style={[styles.modalContent,screenHeight && screenHeight <780 && styles.modalContentSmall]}>
 
               <Image source={require('../images/success.jpg')} style={styles.successImage} />
               <Text style={styles.successMessage}>Request submitted</Text>
@@ -35,6 +51,13 @@ const styles = StyleSheet.create({
         borderRadius: 25,
         width:350,
         alignItems: 'center',
+      },
+      modalContentSmall: {
+        backgroundColor: 'white',
+        padding: 20,
+        borderRadius: 25,
+        width:320,
+        alignItems: 'center'
       },
       title: {
         fontSize: 20,

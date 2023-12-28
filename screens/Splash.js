@@ -1,5 +1,5 @@
-import React from 'react';
-import { StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native';
+import React , {useState,useEffect} from 'react';
+import { StyleSheet, View, Text, Image, TouchableOpacity, Dimensions } from 'react-native';
 import AppIntroSlider from 'react-native-app-intro-slider';
 import { useNavigation } from '@react-navigation/native';
 import { useRef} from 'react';
@@ -7,7 +7,7 @@ import { useRef} from 'react';
 const slides = [
   {
     key: 1,
-    title: 'Welcome To Dhani Faster Loan',
+    title: 'Welcome To Dhani Finance Loan',
     text: "We're here to assist you in your financial journey. To get started, we need some information from you. Let's make this quick and easy. Tap 'Next' to Begin.",
     image: require("../images/s1.png"),
   },
@@ -30,14 +30,31 @@ const Splash = () => {
   const navigation = useNavigation();
   const slider = useRef(null);
 
+  const [screenHeight, setScreenHeight] = useState(Dimensions.get('window').height);
+
+  useEffect(() => {
+    // Update screenHeight when the screen size changes
+    const updateScreenHeight = () => {
+      setScreenHeight(Dimensions.get('window').height);
+    };
+
+    Dimensions.addEventListener('change', updateScreenHeight);
+
+    return () => {
+      // Remove the event listener when the component is unmounted
+      Dimensions.removeEventListener('change', updateScreenHeight);
+    };
+  }, []);
+
+
   const renderItem = ({ item }) => {
     return (
-      <View style={styles.slide}>
+      <View style={[ styles.slide,screenHeight && screenHeight< 780 && styles.smallScreenPadding] } >
         <View style={styles.imageContainer}>
-          <Image source={item.image} style={styles.image} />
+          <Image source={item.image} style={[styles.image,screenHeight && screenHeight < 780 && styles.imageSmall]} />
         </View>
-        <View style={styles.bottomContainer}>
-          <Text style={styles.title}>{item.title}</Text>
+        <View style={[styles.bottomContainer, screenHeight && screenHeight < 780 && styles.bottomContainerSmall]}>
+          <Text style={[styles.title, screenHeight && screenHeight < 780 && styles.titleSmall]}>{item.title}</Text>
           <Text style={styles.text}>{item.text}</Text>
           {(item.key==1 || item.key==2)  &&
             <TouchableOpacity style={styles.button}  onPress={() => slider.current.goToSlide(item.key, true)}>
@@ -56,8 +73,8 @@ const Splash = () => {
 
     return (
       <AppIntroSlider
-        activeDotStyle={styles.activeDot}
-        dotStyle={styles.inactiveDot}
+        activeDotStyle={[styles.activeDot,screenHeight < 780 && styles.activeDotSmall]}
+        dotStyle={[styles.inactiveDot,screenHeight < 780 && styles.inactiveDotSmall]}
         renderItem={renderItem}
         data={slides}
         ref={(ref) => (slider.current = ref)}
@@ -73,6 +90,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
+  smallScreenPadding: {
+    marginBottom:400,
+    fontSize:10
+  },
   imageContainer: {
     justifyContent: 'center',
   },
@@ -81,6 +102,23 @@ const styles = StyleSheet.create({
     width: 340,
     height: 380,
     resizeMode: 'contain',
+  },
+  imageSmall: {
+    marginTop:50,
+    width: 300,
+    height: 340,
+    resizeMode: 'contain',
+  },
+  bottomContainerSmall: {
+    backgroundColor:"#fff",
+    alignItems: 'center',
+    justifyContent: 'center',
+    textAlign:"center",
+    marginBottom: 120,
+    width: 320,
+    height:340,
+    borderRadius:30,
+    padding:35
   },
   bottomContainer: {
     backgroundColor:"#fff",
@@ -122,13 +160,23 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign:"center"
   },
+  titleSmall: {
+    marginTop:20,
+    fontSize: 22,
+    width:290,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    justifyContent: 'center',
+    textAlign: 'center',
+    color:"#434343"
+  },
   activeDot: {
     backgroundColor: '#216FF4',
     width: 9,
     height: 9,
     borderRadius: 5,
     marginHorizontal: 5,
-    marginBottom:760
+    marginBottom:740
   },
   inactiveDot: {
     backgroundColor: '#D9D9D9',
@@ -136,8 +184,24 @@ const styles = StyleSheet.create({
     height: 9,
     borderRadius: 5,
     marginHorizontal: 5,
-    marginBottom:760
+    marginBottom:740
   },
+  activeDotSmall: {
+    backgroundColor: '#216FF4',
+    width: 9,
+    height: 9,
+    borderRadius: 5,
+    marginHorizontal: 5,
+    marginBottom:550
+  },
+  inactiveDotSmall: {
+    backgroundColor: '#D9D9D9',
+    width: 9,
+    height: 9,
+    borderRadius: 5,
+    marginHorizontal: 5,
+    marginBottom:550
+  }
 });
 
 export default Splash;

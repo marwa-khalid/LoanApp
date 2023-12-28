@@ -1,5 +1,5 @@
 import React,{useEffect, useState} from 'react';
-import { Modal, View, TextInput, Text, TouchableOpacity, StyleSheet,Alert } from 'react-native';
+import { Modal, View, TextInput, Text, TouchableOpacity, StyleSheet,Dimensions} from 'react-native';
 import OneMinuteTimer from './Timer';
 import { AntDesign } from '@expo/vector-icons';
 
@@ -7,9 +7,22 @@ const CodeVerificationModal = ({ visible, phoneNumber, onClose, onResend, onSubm
   const [enteredCode, setEnteredCode] = useState('');
   const codeInputs = Array.from({ length: 6 }, () => React.createRef());
 
+  const [screenHeight, setScreenHeight] = useState(Dimensions.get('window').height);
+
   useEffect(()=>{
     setEnteredCode('');
+    const updateScreenHeight = () => {
+      setScreenHeight(Dimensions.get('window').height);
+    };
+
+    Dimensions.addEventListener('change', updateScreenHeight);
+
+    return () => {
+      // Remove the event listener when the component is unmounted
+      Dimensions.removeEventListener('change', updateScreenHeight);
+    };
   },[])
+
     const handleCodeChange = (index, value) => {
     const newCodes = [...codes];
     newCodes[index] = value;
@@ -27,16 +40,16 @@ const CodeVerificationModal = ({ visible, phoneNumber, onClose, onResend, onSubm
   return (
     <Modal visible={visible} animationType="slide" transparent>
       <View style={styles.modalContainer}>
-        <View style={styles.modalContent}>
+        <View style={[styles.modalContent, screenHeight && screenHeight< 780 && styles.modalContentSmall]}>
         <TouchableOpacity onPress={onClose} style={styles.closeButton}>
             <AntDesign name="close" size={24} color="black" />
             </TouchableOpacity>
           <Text style={styles.title}>Verification </Text>
             
-          <Text style={styles.phoneNumberText}>
+          <Text style={[styles.phoneNumberText,, screenHeight && screenHeight< 780 && styles.phoneNumberTextSmall]}>
           A verification code will be sent to your number 
           </Text>
-          <Text style={styles.phoneNumber}>{phoneNumber}</Text>
+          <Text style={styles.phoneNumber}>+91{phoneNumber}</Text>
           <View style={styles.codeContainer}>
             {[1, 2, 3, 4, 5, 6].map((index) => (
               <TextInput
@@ -94,6 +107,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyConten:"space-between"
   },
+  modalContentSmall: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 25,
+    width:320,
+    alignItems: 'center',
+    justifyConten:"space-between"
+  },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
@@ -104,6 +125,11 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     color:"black",
     
+  },
+  phoneNumberTextSmall: {
+    fontSize: 13,
+    marginBottom: 4,
+    color:"black",
   },
   phoneNumber: {
     fontSize: 16,

@@ -1,15 +1,15 @@
 {
   "expo": {
-    "name": "DhaniInstant",
-    "slug": "DhaniInstant",
+    "name": "DhaniFinance",
+    "slug": "DhaniFinance",
     "version": "1.0.0",
     "extra": {
       "eas": {
-        "projectId": "62a297eb-e99c-49b8-8b41-335c824550d8"
+        "projectId": "25b30c21-aec9-4370-b0dd-5ef68aa7eb90"
       }
     },
     "android": {
-      "package": "com.marwakhalid_1.DhaniInstant"
+      "package": "com.marwakhalid_1.DhaniFinance"
     }
   },
   "updates": {

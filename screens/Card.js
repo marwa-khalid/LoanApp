@@ -1,10 +1,26 @@
-import React , { useState } from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import React , { useState ,useEffect} from 'react';
+import { View, Text, Image, StyleSheet, TouchableOpacity,Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 const Card = ({ title, description, image }) => {
   const navigation = useNavigation();
   const [isPressed, setIsPressed] = useState(false);
+
+  const [screenHeight, setScreenHeight] = useState(Dimensions.get('window').height);
+
+  useEffect(() => {
+    // Update screenHeight when the screen size changes
+    const updateScreenHeight = () => {
+      setScreenHeight(Dimensions.get('window').height);
+    };
+
+    Dimensions.addEventListener('change', updateScreenHeight);
+
+    return () => {
+      // Remove the event listener when the component is unmounted
+      Dimensions.removeEventListener('change', updateScreenHeight);
+    };
+  }, []);
 
   const handlePress = () => {
     switch (title) {
@@ -27,7 +43,7 @@ const Card = ({ title, description, image }) => {
     onPress={handlePress}
       onPressIn={() => setIsPressed(true)}
       onPressOut={() => setIsPressed(false)}>
-      <View style={[styles.card, isPressed && styles.cardPressed]}>
+      <View style={[styles.card,  screenHeight && screenHeight< 780 && styles.smallScreenPadding, isPressed && styles.cardPressed,]}>
         <View style={styles.cardContent}>
           <View style={styles.textContainer}>
             <Text style={styles.cardTitle}>{title}</Text>
@@ -43,6 +59,15 @@ const Card = ({ title, description, image }) => {
 const styles = StyleSheet.create({
   card: {
     width:360,
+    margin: 10,
+    borderRadius: 15,
+    overflow: 'hidden',
+    elevation: 5,
+    shadowColor: '#000', 
+    height:110,
+  },
+  smallScreenPadding:{
+    width:320,
     margin: 10,
     borderRadius: 15,
     overflow: 'hidden',

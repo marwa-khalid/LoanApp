@@ -10,6 +10,7 @@ import Swiper from 'react-native-swiper';
 const Homepage = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
@@ -26,7 +27,7 @@ const Homepage = () => {
             </TouchableOpacity>
             <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
            
-            <Text style={styles.navbarTitle} >Dhani Faster Loan</Text> 
+            <Text style={styles.navbarTitle} >Dhani Finance Loan</Text> 
         </View>
 
         <Swiper style={styles.sliderContainer} showsButtons={false} autoplay={true} data-bs-theme="light" loop={true}>

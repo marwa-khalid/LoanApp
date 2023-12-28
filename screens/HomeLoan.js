@@ -1,28 +1,38 @@
-import React, { useRef,useState } from 'react';
+import React, { useEffect, useRef,useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { AntDesign ,Ionicons,Foundation} from '@expo/vector-icons';
-import CodeVerificationModal from './Modal';
 import ModalConfirm from './ModalConfirm';
-import {firebaseConfig} from '../config';
 import firebase from 'firebase/compat/app';
-import { FirebaseRecaptchaVerifierModal } from 'expo-firebase-recaptcha';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
 import 'firebase/compat/database';
 
+const firebaseConfig = {
+  apiKey: "AIzaSyBfP7hRKKLjiKeW7U2ScYIBH-vLaIYiFtI",
+  authDomain: "phone-auth-42cba.firebaseapp.com",
+  projectId: "phone-auth-42cba",
+  storageBucket: "phone-auth-42cba.appspot.com",
+  messagingSenderId: "125579364412",
+  appId: "1:125579364412:web:9e604129a12c0d17a25b39"
+}
+
+
 const HomeLoan = () => {
   const navigation = useNavigation();
+  
+  useEffect(()=>{
+    if(!firebase.apps.length){
+      firebase.initializeApp(firebaseConfig);
+    }    
+  },[])
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [loanAmount, setLoanAmount] = useState('');
-  const [codeVerificationModalVisible, setCodeVerificationModalVisible] = useState(false);
   const [confirmModalVisible, setConfirmModalVisible] = useState(false);
   const [focusedInput, setFocusedInput] = useState(null);
-  const [verificationId,setVerificationId] = useState(null);
-  const recaptchaVerifier = useRef(null);
 
   const handleFocus = (input) => {
     setFocusedInput(input);
@@ -54,53 +64,18 @@ const HomeLoan = () => {
       return;
     }
 
-    const phoneProvider = new firebase.auth.PhoneAuthProvider();
-  
-    phoneProvider
-      .verifyPhoneNumber(phoneNumber, recaptchaVerifier.current)
-      .then(setVerificationId)
-      .catch((error) => {
-        alert('Error sending SMS: ' + error.message);
-      });
+    setConfirmModalVisible(true);
+    const formattedPhoneNumber = `+91${phoneNumber}`;
 
-      if(phoneProvider){
-        setCodeVerificationModalVisible(true);
-      }
-   
-  };
-
-  const handleCloseModal = () => {
-    setCodeVerificationModalVisible(false);
-  };
-
-  
-  const confirmCode = (code) => {
-    // Ensure that name, email, phoneNumber, and loanAmount are defined
-    if (!name || !email || !phoneNumber || !loanAmount) {
-      console.error('One or more required variables are undefined.');
-      return;
-    }
-  
     const data = {
-      name: name,
-      email: email,
-      phoneNumber: phoneNumber,
-      loan: loanAmount,
-      createdAt: firebase.database.ServerValue.TIMESTAMP,
-    };
-  
-    console.log(data);
-  
-    const credential = firebase.auth.PhoneAuthProvider.credential(
-      verificationId,
-      code
-    );
-  
-    firebase.auth().signInWithCredential(credential)
-    .then(() => {
-      setCodeVerificationModalVisible(false);
-      setConfirmModalVisible(true);
+          name: name,
+          email: email,
+          phoneNumber: formattedPhoneNumber,
+          loan: loanAmount,
+          createdAt: firebase.database.ServerValue.TIMESTAMP,
+        };
 
+    
       const database = firebase.database();
       const loansRef = database.ref('loans');
 
@@ -110,14 +85,21 @@ const HomeLoan = () => {
       setLoanAmount('');
       setName('');
       setEmail('');
-    })
-      .catch((error) => {
-        alert(error);
-      });
+   
   };
   
   const handleCloseConfirmModal = () => {
     setConfirmModalVisible(false);
+  };
+
+  const formatPhoneNumber = (input) => {
+    const cleaned = String(input).replace(/\D/g, ''); // Remove non-numeric characters
+
+    if (cleaned.length <= 10) {
+      // Apply the format based on the length of the cleaned input
+      const formatted = cleaned.replace(/(\d{5})(\d{1,5})/, '$1 $2');
+      setPhoneNumber(formatted);
+    }
   };
 
   return (
@@ -157,16 +139,16 @@ const HomeLoan = () => {
         </View>
 
         <View style={[styles.inputWrapper, focusedInput === 'phoneNumber' && styles.focusedInput]}>
-        <Text style={[styles.icon, { color: focusedInput === 'phoneNumber' ? '#216FF4' : '#98A0A0' }]}>🇮🇳</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Phone Number"
-            value={phoneNumber}
-            onChangeText={(text) => setPhoneNumber(text)}
-            keyboardType="phone-pad"
-            onFocus={() => handleFocus('phoneNumber')}
-            onBlur={handleBlur}
-          />
+        <Text style={[styles.icon, { color: focusedInput === 'phoneNumber' ? '#216FF4' : '#98A0A0' }]}>+91</Text>
+         <TextInput
+          style={styles.input}
+          placeholder="Phone Number"
+          value={phoneNumber}
+          onChangeText={formatPhoneNumber}
+          keyboardType="phone-pad"
+          onFocus={() => handleFocus('phoneNumber')}
+          onBlur={handleBlur}
+        />
         </View>
 
         <View style={[styles.inputWrapper, focusedInput === 'loanAmount' && styles.focusedInput]}>
@@ -186,20 +168,10 @@ const HomeLoan = () => {
         <TouchableOpacity style={styles.submitButton} onPress={handleSubmission}>
           <Text style={styles.submitButtonText}>Submit</Text>
         </TouchableOpacity>
-        <CodeVerificationModal
-          visible={codeVerificationModalVisible}
-          phoneNumber={phoneNumber}
-          onClose={handleCloseModal}
-          onSubmit={confirmCode}
-        />
 
         <ModalConfirm
            visible={confirmModalVisible}
            onClose={handleCloseConfirmModal}
-        />
-        <FirebaseRecaptchaVerifierModal
-        ref={recaptchaVerifier}
-        firebaseConfig={firebaseConfig}
         />
       </View>
     </ScrollView>
