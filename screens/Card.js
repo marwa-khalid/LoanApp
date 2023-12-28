@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
     height:110,
   },
   cardPressed: {
-    elevation: 1,
+    elevation: 0,
     shadowColor: '#000', 
   },
   cardContent: {
