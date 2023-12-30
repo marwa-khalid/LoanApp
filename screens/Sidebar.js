@@ -1,10 +1,12 @@
 import React , {useEffect,useState} from 'react';
-import { View, TouchableOpacity, Text, Modal, TouchableWithoutFeedback, StyleSheet, Dimensions} from 'react-native';
+import { View, TouchableOpacity, Text, Modal, Linking, TouchableWithoutFeedback, StyleSheet, Dimensions} from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
 const CustomSidebar = ({ isOpen, toggleSidebar }) => {
 
   const [screenHeight, setScreenHeight] = useState(Dimensions.get('window').height);
+  const navigation = useNavigation();
 
   useEffect(() => {
     // Update screenHeight when the screen size changes
@@ -19,6 +21,14 @@ const CustomSidebar = ({ isOpen, toggleSidebar }) => {
       Dimensions.removeEventListener('change', updateScreenHeight);
     };
   }, []);
+
+  const phoneNumber = '8981866869';
+
+  const handleContactPress = () => {
+    const phoneUrl = `tel:${phoneNumber}`;
+    Linking.openURL(phoneUrl);
+  };
+
   return (
     <Modal
       animationType='slide'
@@ -38,14 +48,20 @@ const CustomSidebar = ({ isOpen, toggleSidebar }) => {
           <Text style={[styles.title,screenHeight && screenHeight< 780 && styles.titleSmall]}>Dhani Finance Loan</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.options}>
+        <TouchableOpacity style={styles.options} onPress={()=>navigation.navigate('Terms')}>
           <Text style={styles.text}>Term And Condition</Text>
           <AntDesign name="right" size={24} color="black" />
         </TouchableOpacity>
         <View style={styles.line} />
 
-        <TouchableOpacity style={styles.options}>
+        <TouchableOpacity style={styles.options} onPress={()=>navigation.navigate('PrivacyPolicy')}>
           <Text style={styles.text}>Privacy Policy</Text>
+          <AntDesign name="right" size={24} color="black" />
+        </TouchableOpacity>
+        <View style={styles.line} />
+
+        <TouchableOpacity style={styles.options} onPress={handleContactPress}>
+          <Text style={styles.text}>Contact Us</Text>
           <AntDesign name="right" size={24} color="black" />
         </TouchableOpacity>
         <View style={styles.line} />

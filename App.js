@@ -8,6 +8,8 @@ import Homepage from './screens/Homepage';
 import PersonalLoan from './screens/PersonalLoan';
 import HomeLoan from './screens/HomeLoan';
 import BusinessLoan from './screens/BusinessLoan';
+import PrivacyPolicyScreen from './screens/PrivacyPolicyScreen';
+import Terms from './screens/Terms';
 
 const Stack = createNativeStackNavigator();
 
@@ -21,6 +23,8 @@ const App = () =>{
           <Stack.Screen name='PersonalLoan' component={PersonalLoan}/>
           <Stack.Screen name='HomeLoan' component={HomeLoan}/>
           <Stack.Screen name='BusinessLoan' component={BusinessLoan}/>
+          <Stack.Screen name='PrivacyPolicy' component={PrivacyPolicyScreen}/>
+          <Stack.Screen name='Terms' component={Terms}/>
         </Stack.Navigator>
       </NavigationContainer>
   );
