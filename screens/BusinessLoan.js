@@ -58,7 +58,12 @@ const BusinessLoan = () => {
       alert('Please enter your phone number');
       return;
     }
-  
+
+    if (phoneNumber.replace(/\D/g, '').length !== 10){
+      alert('Please enter a valid 10-digit phone number');
+      return;
+    }
+
     if (!loanAmount.trim()) {
       alert('Please enter the loan amount');
       return;
