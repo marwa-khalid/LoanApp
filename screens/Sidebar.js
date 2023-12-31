@@ -45,7 +45,7 @@ const CustomSidebar = ({ isOpen, toggleSidebar }) => {
       <View style={styles.sidebar}>
         <TouchableOpacity style={[styles.titleContainer, screenHeight && screenHeight< 780 && styles.titleContainerSmall]} onPress={toggleSidebar}>
           <AntDesign name="left" size={24} color="black" style={{ marginLeft: 20 }} />
-          <Text style={[styles.title,screenHeight && screenHeight< 780 && styles.titleSmall]}>Dhani Finance Loan</Text>
+          <Text style={[styles.title,screenHeight && screenHeight< 780 && styles.titleSmall]}>Dhani Finance</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.options} onPress={()=>navigation.navigate('Terms')}>

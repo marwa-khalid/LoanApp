@@ -27,7 +27,7 @@ const Homepage = () => {
             </TouchableOpacity>
             <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
            
-            <Text style={styles.navbarTitle} >Dhani Finance Loan</Text> 
+            <Text style={styles.navbarTitle} >Dhani Finance</Text> 
         </View>
 
         <Swiper style={styles.sliderContainer} showsButtons={false} autoplay={true} data-bs-theme="light" loop={true}>

@@ -7,7 +7,7 @@ import { useRef} from 'react';
 const slides = [
   {
     key: 1,
-    title: 'Welcome To Dhani Finance Loan',
+    title: 'Welcome To Dhani Finance',
     text: "We're here to assist you in your financial journey. To get started, we need some information from you. Let's make this quick and easy. Tap 'Next' to Begin.",
     image: require("../images/s1.png"),
   },
