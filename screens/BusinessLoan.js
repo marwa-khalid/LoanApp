@@ -42,15 +42,25 @@ const BusinessLoan = () => {
     setFocusedInput(null);
   };
 
-  const handleSubmission = () => {
+  const handleSubmission = async () => {
     // Validation checks
     if (!name.trim()) {
       alert('Please enter your name');
       return;
     }
+
+    if (!/^[a-zA-Z ]+$/.test(name)) {
+      alert('Please enter a valid name containing only letters and spaces.');
+      return;
+    }
   
     if (!email.trim()) {
       alert('Please enter your email');
+      return;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      alert('Please enter a valid email address.');
       return;
     }
   
@@ -63,7 +73,7 @@ const BusinessLoan = () => {
       alert('Please enter a valid 10-digit phone number');
       return;
     }
-
+  
     if (!loanAmount.trim()) {
       alert('Please enter the loan amount');
       return;
@@ -81,15 +91,27 @@ const BusinessLoan = () => {
         };
 
     
-      const database = firebase.database();
-      const loansRef = database.ref('loans');
+        const database = firebase.database();
+        const loansRef = database.ref('loans');
+        const query = loansRef.orderByChild('phoneNumber').equalTo(formattedPhoneNumber);
+        try {
+          const snapshot = await query.once('value');
+          if (snapshot.exists()) {
+            alert('A request with this phone number already exists.');
+            return;
+          }
 
-      loansRef.push(data);
+          loansRef.push(data);
+          setConfirmModalVisible(true);
+          setPhoneNumber('');
+          setLoanAmount('');
+          setName('');
+          setEmail('');
 
-      setPhoneNumber('');
-      setLoanAmount('');
-      setName('');
-      setEmail('');
+        } catch (error) {
+          console.error('Error checking for existing requests:', error);
+          alert('An error occurred while processing your request. Please try again.');
+        }
    
   };
   

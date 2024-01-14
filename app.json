@@ -1,15 +1,15 @@
 {
   "expo": {
-    "name": "DhaniFinance",
-    "slug": "DhaniFinance",
+    "name": "DhaniLoanFinanceApp",
+    "slug": "DhaniLoanFinanceApp",
     "version": "1.0.0",
+    "android": {
+      "package": "com.marwakhalid_1.DhaniLoanFinanceApp"
+    },
     "extra": {
       "eas": {
-        "projectId": "25b30c21-aec9-4370-b0dd-5ef68aa7eb90"
+        "projectId": "852d7615-8020-469c-93be-3ac13892fa4a"
       }
-    },
-    "android": {
-      "package": "com.marwakhalid_1.DhaniFinance"
     }
   },
   "updates": {
